@@ -16,6 +16,7 @@ void	convertString(std::string str)
 	try
 	{
 		Converter	c(str);
+
 		c.castNum();
 		c.printNum();
 	}

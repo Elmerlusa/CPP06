@@ -3,12 +3,23 @@
 
 # include <iostream>
 # include <string>
-# include <sstream>
+# include <cstdlib>
+
+enum	NumType
+{
+	errorType = -1,
+	charType,
+	intType,
+	floatType,
+	doubleType
+};
 
 class	Converter
 {
 	private:
 		std::string	num;
+		NumType		numType;
+		bool		pseudoliteral;
 		char		cNum;
 		int			iNum;
 		float		fNum;
@@ -17,7 +28,8 @@ class	Converter
 		Converter(std::string num);
 		~Converter(void);
 
-		bool	isValidNum(std::string str) const;
+		NumType	checkNumType(std::string str);
+		NumType	isPseudoliteral(std::string str);
 		void	castNum(void);
 		void	printNum(void) const;
 };
