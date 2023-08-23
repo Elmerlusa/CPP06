@@ -1,5 +1,7 @@
 # exec
 convert
+serialize
+identify
 
 # Prerequisites
 *.d
