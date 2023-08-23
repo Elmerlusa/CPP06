@@ -12,6 +12,9 @@ RM = rm -rf
 ########################################################
 all:		${NAME}
 
+test:		${NAME}
+		./${NAME}
+
 ${NAME}:	${CPPO}
 		@${CPP} ${FLAGS} ${CPPO} -o ${NAME}
 
