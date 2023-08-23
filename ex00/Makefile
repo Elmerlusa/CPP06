@@ -35,6 +35,7 @@ test:		${NAME}
 		./${NAME} 89.0f
 		./${NAME} -inff
 		./${NAME} +inff
+		./${NAME} inff
 		./${NAME} nanf
 		@echo -------------------------Double
 		./${NAME} 0.0
@@ -43,14 +44,8 @@ test:		${NAME}
 		./${NAME} 4.0
 		./${NAME} -inf
 		./${NAME} +inf
+		./${NAME} inf
 		./${NAME} nan
-
-t:			${NAME}
-		@echo Integer
-		./${NAME} 0
-		./${NAME} 145
-		./${NAME} -42
-		./${NAME} 42
 
 ${NAME}:	${CPPO}
 		@${CPP} ${FLAGS} ${CPPO} -o ${NAME}

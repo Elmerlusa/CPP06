@@ -43,9 +43,9 @@ NumType	Converter::checkNumType(std::string str)
 NumType	Converter::isPseudoliteral(std::string str)
 {
 	this->pseudoliteral = true;
-	if (str.compare("-inff") == 0 || str.compare("+inff") == 0 || str.compare("nanf") == 0)
+	if (str.compare("-inff") == 0 || str.compare("+inff") == 0 || str.compare("inff") == 0 || str.compare("nanf") == 0)
 		return floatType;
-	if (str.compare("-inf") == 0 || str.compare("+inf") == 0 || str.compare("nan") == 0)
+	if (str.compare("-inf") == 0 || str.compare("+inf") == 0 || str.compare("inf") == 0 || str.compare("nan") == 0)
 		return doubleType;
 	this->pseudoliteral = false;
 	return errorType;
@@ -88,14 +88,16 @@ void	Converter::printNum(void) const
 {
 	bool		printDecimalPart = this->numType == charType || this->numType == intType || this->fNum == this->iNum;
 	std::string	charText(1, this->cNum);
-	// std::string	intText = this->pseudoliteral ? "impossible" : (this->iNum + "");
 
 	if (this->iNum < 0 || 127 < this->iNum || this->pseudoliteral)
 		charText = "impossible";
 	else if (std::isprint(this->cNum) == false)
 		charText = "Non displayable";
-	std::cout << "char: " << charText << "\n"
-			<< "int: " << this->iNum << "\n"
-			<< "float: " << this->fNum << (printDecimalPart ? ".0" : "") << "f\n"
+	std::cout << "char: " << charText << "\nint: ";
+	if (this->pseudoliteral)
+		std::cout << "impossible";
+	else
+		std::cout << this->iNum;
+	std::cout << "\nfloat: " << this->fNum << (printDecimalPart ? ".0" : "") << "f\n"
 			<< "double: " << this->dNum << (printDecimalPart ? ".0" : "") << std::endl;
 }
