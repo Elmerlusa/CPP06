@@ -15,7 +15,7 @@ int	main(void)
 	d->name = "El Nano";
 	d->age = 42;
 	printData(d);
-	p = serialize(d);
+	p = serialize(NULL);
 	result = deserialize(p);
 	std::cout << "RESULT (uintptr_t = " << p << "): ";
 	printData(result);
@@ -35,5 +35,8 @@ Data*	deserialize(uintptr_t raw)
 
 void	printData(Data* d)
 {
-	std::cout << "Data(" << d->name << ", " << d->age << ")" << std::endl;
+	if (d == NULL)
+		std::cout << "NULL" << std::endl;
+	else
+		std::cout << "Data(" << d->name << ", " << d->age << ")" << std::endl;
 }
