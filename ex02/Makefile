@@ -1,6 +1,6 @@
 NAME = identify
 
-CPP = c++
+CPP = clang++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
 CPPF = main.cpp Base.cpp
@@ -13,9 +13,9 @@ RM = rm -rf
 all:		${NAME}
 
 test:		${NAME}
-		for i in {1..10}; do \
+		for i in {1..15}; do \
 			./${NAME}; \
-			sleep 1.2; \
+			sleep 0.9; \
 		done;
 
 ${NAME}:	${CPPO}

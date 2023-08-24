@@ -1,6 +1,6 @@
 NAME = serializer
 
-CPP = c++
+CPP = clang++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
 CPPF = main.cpp

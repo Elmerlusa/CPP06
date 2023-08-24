@@ -2,8 +2,10 @@
 # define CONVERTER_HPP
 
 # include <iostream>
+# include <iomanip>
 # include <string>
 # include <cstdlib>
+# include <limits>
 
 enum	NumType
 {
@@ -28,10 +30,15 @@ class	Converter
 		Converter(std::string num);
 		~Converter(void);
 
-		NumType	checkNumType(std::string str);
-		NumType	isPseudoliteral(std::string str);
+		bool	isPseudoliteral(std::string str);
+		bool	isValidNum(std::string str);
+		NumType	identifyNumType(void);
+		NumType	identifyPseudoliteral(void);
+
 		void	castNum(void);
-		void	printNum(void) const;
+
+		void		printNum(void) const;
+		std::string	getCharText(void) const;
 };
 
 #endif

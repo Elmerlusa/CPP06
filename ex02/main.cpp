@@ -20,6 +20,7 @@ int	main(void)
 Base*	generate(void)
 {
 	std::srand((int)time(NULL));
+	std::rand();
 	switch (std::rand() % 3 + 1)
 	{
 	case 1:
@@ -41,7 +42,10 @@ Base*	generate(void)
 void	identify(Base *p)
 {
 	if (p == NULL)
+	{
+		std::cout << "NULL pointer" << std::endl;
 		return ;
+	}
 	std::cout << "Identificated. The object is an instance of ";
 	if (dynamic_cast<A*>(p))
 		std::cout << "A" << std::endl;

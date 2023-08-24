@@ -8,18 +8,32 @@ void	printData(Data* d);
 
 int	main(void)
 {
-	Data*		d = new Data();
-	uintptr_t	p;
-	Data*		result = NULL;
+	{
+		uintptr_t	p;
+		Data*		result;
 
-	d->name = "El Nano";
-	d->age = 42;
-	printData(d);
-	p = serialize(NULL);
-	result = deserialize(p);
-	std::cout << "RESULT (uintptr_t = " << p << "): ";
-	printData(result);
-	delete d;
+		std::cout << "Serializing and deserializing NULL" << std::endl;
+		p = serialize(NULL);
+		result = deserialize(p);
+		std::cout << "RESULT (uintptr_t = " << p << "): ";
+		printData(result);
+	}
+	{
+		Data*		d = new Data();
+		uintptr_t	p;
+		Data*		result;
+
+		d->id = 99;
+		d->name = "El Nano";
+		d->age = 42;
+		std::cout << "Serializing and deserializing ";
+		printData(d);
+		p = serialize(d);
+		result = deserialize(p);
+		std::cout << "RESULT (uintptr_t = " << p << "): ";
+		printData(result);
+		delete d;
+	}
 	return 0;
 }
 
@@ -38,5 +52,5 @@ void	printData(Data* d)
 	if (d == NULL)
 		std::cout << "NULL" << std::endl;
 	else
-		std::cout << "Data(" << d->name << ", " << d->age << ")" << std::endl;
+		std::cout << "Data(" << d->id << ", " << d->name << ", " << d->age << ")" << std::endl;
 }

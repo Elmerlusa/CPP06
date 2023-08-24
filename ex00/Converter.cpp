@@ -2,50 +2,87 @@
 
 Converter::Converter(std::string num)
 {
-	this->numType = this->checkNumType(num);
-
-	if (this->numType == errorType)
+	if (this->isValidNum(num) == false)
 		throw std::invalid_argument("El parámetro no es un número válido");
 	this->num = num;
+	this->numType = this->identifyNumType();
 }
 
 Converter::~Converter(void) {}
 
-NumType	Converter::checkNumType(std::string str)
+bool	Converter::isPseudoliteral(std::string str)
+{
+	if (str.compare("-inff") == 0 || str.compare("+inff") == 0 || str.compare("inff") == 0 || str.compare("nanf") == 0)
+		return true;
+	if (str.compare("-inf") == 0 || str.compare("+inf") == 0 || str.compare("inf") == 0 || str.compare("nan") == 0)
+		return true;
+	return false;
+}
+
+bool	Converter::isValidNum(std::string str)
 {
 	std::string::const_iterator	it = str.begin();
-	NumType						pseudoliteral = this->isPseudoliteral(str);
 	bool						decimal = false;
 
 	if (str.empty())
-		return errorType;
-	if (pseudoliteral != errorType)
-		return pseudoliteral;
+		return false;
 	if (str.length() == 1 && std::isprint(*it) && std::isdigit(*it) == false)
-		return charType;
+		return true;
+	if (this->isPseudoliteral(str))
+		return true;
 	if (it != str.end() && (*it == '-' || *it == '+'))
 		it++;
 	while (it != str.end() && (std::isdigit(*it) || *it == '.'))
 	{
 		if (*it == '.' && decimal == true)
-			return errorType;
+			return false;
+		else if (*it == '.' && (it + 1 == str.end() || std::isdigit(*(it + 1)) == false))
+			return false;
 		else if (*it == '.')
 			decimal = true;
 		it++;
 	}
-	if (it != str.end() && *it == 'f' && it + 1 == str.end() && decimal == true)
-		return floatType;
-	if (it != str.end())
-		return errorType;
-	return decimal ? doubleType : intType;
+	if (it != str.end() && *it == 'f' && it + 1 == str.end())
+		return true;
+	return it == str.end();
 }
 
-NumType	Converter::isPseudoliteral(std::string str)
+NumType	Converter::identifyNumType(void)
+{
+	std::string::const_iterator	it = num.begin();
+	NumType						pseudoliteralType = this->identifyPseudoliteral();
+	bool						decimal = num.rfind('.', std::string::npos) != std::string::npos;
+	size_t						len = this->num.length();
+	double						dNum;
+	
+	if (pseudoliteralType != errorType)
+		return pseudoliteralType;
+	if (len == 1 && std::isprint(*it) && std::isdigit(*it) == false)
+		return charType;
+	{
+		std::string					auxNum;
+
+		auxNum = this->num[len - 1] == 'f' ? this->num.substr(0, len - 1) : this->num;
+		dNum = strtod(auxNum.c_str(), NULL);
+	}	
+	if (this->num[len - 1] == 'f')
+	{
+		if (dNum < -std::numeric_limits<float>::max() || std::numeric_limits<float>::max() < dNum)
+			throw std::runtime_error("El número está fuera de los límites del float y por tanto es erróneo");
+		return floatType;
+	}
+	if (decimal == false && (dNum < -std::numeric_limits<int>::max() - 1 || std::numeric_limits<int>::max() < dNum))
+		return doubleType;
+	else
+		return intType;
+}
+
+NumType	Converter::identifyPseudoliteral(void)
 {
 	this->pseudoliteral = true;
-	if (str.compare("-inff") == 0 || str.compare("+inff") == 0 || str.compare("inff") == 0 || str.compare("nanf") == 0)
+	if (this->num.compare("-inff") == 0 || this->num.compare("+inff") == 0 || this->num.compare("inff") == 0 || this->num.compare("nanf") == 0)
 		return floatType;
-	if (str.compare("-inf") == 0 || str.compare("+inf") == 0 || str.compare("inf") == 0 || str.compare("nan") == 0)
+	if (this->num.compare("-inf") == 0 || this->num.compare("+inf") == 0 || this->num.compare("inf") == 0 || this->num.compare("nan") == 0)
 		return doubleType;
 	this->pseudoliteral = false;
 	return errorType;
@@ -86,18 +123,27 @@ void	Converter::castNum(void)
 
 void	Converter::printNum(void) const
 {
-	bool		printDecimalPart = this->numType == charType || this->numType == intType || this->fNum == this->iNum;
+	std::cout << "char: " << this->getCharText() << "\nint: ";
+	if (this->dNum > std::numeric_limits<int>::max())
+		std::cout << this->dNum << "DOUBLE > INT_MAX" << std::endl;
+	if (this->dNum < -std::numeric_limits<int>::max() - 1)
+		std::cout << this->dNum << "DOUBLE < INT_MIN" << std::endl;
+	if (this->pseudoliteral || this->dNum < -std::numeric_limits<int>::max() - 1 || std::numeric_limits<int>::max() < this->dNum)
+		std::cout << "impossible";
+	else
+		std::cout << this->iNum;
+	std::cout << std::fixed << std::setprecision(1);
+	std::cout << "\nfloat: " << this->fNum << "f\n"
+			<< "double: " << this->dNum << std::endl;
+}
+
+std::string	Converter::getCharText(void) const
+{
 	std::string	charText(1, this->cNum);
 
 	if (this->iNum < 0 || 127 < this->iNum || this->pseudoliteral)
 		charText = "impossible";
 	else if (std::isprint(this->cNum) == false)
 		charText = "Non displayable";
-	std::cout << "char: " << charText << "\nint: ";
-	if (this->pseudoliteral)
-		std::cout << "impossible";
-	else
-		std::cout << this->iNum;
-	std::cout << "\nfloat: " << this->fNum << (printDecimalPart ? ".0" : "") << "f\n"
-			<< "double: " << this->dNum << (printDecimalPart ? ".0" : "") << std::endl;
+	return charText;
 }
