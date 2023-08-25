@@ -1,7 +1,19 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/08/25 13:38:32 by javmarti          #+#    #+#              #
+#    Updated: 2023/08/25 13:38:37 by javmarti         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = convert
 
 CPP = c++
-# FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98
 
 CPPF = main.cpp Converter.cpp
 CPPO = ${CPPF:.cpp=.o}
