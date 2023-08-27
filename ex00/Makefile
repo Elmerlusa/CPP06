@@ -6,13 +6,13 @@
 #    By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/25 13:38:32 by javmarti          #+#    #+#              #
-#    Updated: 2023/08/25 13:38:37 by javmarti         ###   ########.fr        #
+#    Updated: 2023/08/27 15:30:14 by javmarti         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = convert
 
-CPP = c++
+CPP = clang++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
 CPPF = main.cpp Converter.cpp
@@ -34,6 +34,7 @@ test:		${NAME}
 		./${NAME} 3.3.3
 		./${NAME} 3.
 		./${NAME} 3147823589234758902034725089307405723489f
+		./${NAME} 3147823589234758902034725089307405723489
 		@read a
 		clear
 		@echo -------------------------Char
@@ -57,15 +58,15 @@ test:		${NAME}
 		./${NAME} 89.0f
 		./${NAME} -2147483648.0f
 		./${NAME} -2147483649.0f
-		./${NAME} 2147483646.0f
-		./${NAME} +2147483647.0f
+		./${NAME} 2147483647.0f
+		./${NAME} +2147483648.0f
 		@read a
 		clear
 		@echo -------------------------Double
 		./${NAME} 0.0
 		./${NAME} -33.73
 		./${NAME} 7.88
-		./${NAME} 64186445684.0
+		./${NAME} 641864456840985098524358098.0
 		@read a
 		clear
 		@echo -------------------------Pseudoliterals

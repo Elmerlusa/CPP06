@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 13:38:29 by javmarti          #+#    #+#             */
-/*   Updated: 2023/08/25 13:38:30 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/08/27 14:36:40 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,6 @@ void	convertString(std::string str)
 	try
 	{
 		Converter	c(str);
-
-		c.castNum();
-		c.printNum();
 	}
 	catch(const std::exception& e)
 	{
