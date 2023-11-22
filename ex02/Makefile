@@ -12,7 +12,7 @@
 
 NAME = identify
 
-CPP = clang++
+CPP = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
 CPPF = main.cpp Base.cpp

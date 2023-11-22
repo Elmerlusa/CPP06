@@ -38,11 +38,9 @@ Base*	generate(void)
 	case 1:
 		std::cout << "------A was generated------" << std::endl;
 		return new A();
-		break;
 	case 2:
 		std::cout << "------B was generated------" << std::endl;
 		return new B();
-		break;
 	case 3:
 		std::cout << "------C was generated------" << std::endl;
 		return new C();

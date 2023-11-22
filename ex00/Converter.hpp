@@ -22,22 +22,33 @@
 class	Converter
 {
 	private:
-		std::string	num;
-		char		cNum;
-		int			iNum;
-		float		fNum;
-		double		dNum;
-	public:
-		Converter(std::string num);
-		~Converter(void);
+		std::string	_num;
+		char		_cNum;
+		int			_iNum;
+		float		_fNum;
+		double		_dNum;
 
-		bool	isPseudoliteral(std::string str) const;
-		bool	isValidNum(std::string str) const;
+		Converter(void);
+
+		const std::string&	getNum(void) const;
+		const char&			getCNum(void) const;
+		const int&			getINum(void) const;
+		const float&		getFNum(void) const;
+		const double&		getDNum(void) const;
+
+		bool	isPseudoliteral(const std::string& str) const;
+		bool	isValidNum(const std::string& str) const;
 
 		void	castNum(void);
 
 		void		printNum(void) const;
 		std::string	getCharText(void) const;
+	public:
+		Converter(const Converter& converter);
+		Converter(const std::string& num);
+		~Converter(void);
+
+		Converter&	operator=(const Converter& converter);
 };
 
 #endif

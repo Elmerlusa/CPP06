@@ -23,7 +23,7 @@ int	main(int argc, char* argv[])
 	return 0;
 }
 
-void	convertString(std::string str)
+void	convertString(const std::string str)
 {
 	try
 	{

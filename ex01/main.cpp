@@ -14,9 +14,8 @@
 #include <stdint.h>
 
 #include "Data.hpp"
+#include "Serializer.hpp"
 
-uintptr_t	serialize(Data* ptr);
-Data*	deserialize(uintptr_t raw);
 void	printData(Data* d);
 
 int	main(void)
@@ -26,8 +25,8 @@ int	main(void)
 		Data*		result;
 
 		std::cout << "Serializing and deserializing NULL" << std::endl;
-		p = serialize(NULL);
-		result = deserialize(p);
+		p = Serializer::serialize(NULL);
+		result = Serializer::deserialize(p);
 		std::cout << "RESULT (uintptr_t = " << p << "): ";
 		printData(result);
 	}
@@ -41,23 +40,13 @@ int	main(void)
 		d->age = 42;
 		std::cout << "Serializing and deserializing ";
 		printData(d);
-		p = serialize(d);
-		result = deserialize(p);
+		p = Serializer::serialize(d);
+		result = Serializer::deserialize(p);
 		std::cout << "RESULT (uintptr_t = " << p << "): ";
 		printData(result);
 		delete d;
 	}
 	return 0;
-}
-
-uintptr_t	serialize(Data* ptr)
-{
-	return reinterpret_cast<uintptr_t>(ptr);
-}
-
-Data*	deserialize(uintptr_t raw)
-{
-	return reinterpret_cast<Data*>(raw);
 }
 
 void	printData(Data* d)

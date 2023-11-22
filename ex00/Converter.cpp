@@ -12,43 +12,69 @@
 
 #include "Converter.hpp"
 
-Converter::Converter(std::string num)
+Converter::Converter(void): _num("0"), _cNum('0'), _iNum(0), _fNum(0), _dNum(0)
+{
+}
+
+Converter::Converter(const Converter& converter):
+	_num(converter.getNum()), _cNum(converter.getCNum()), _iNum(converter.getINum()), _fNum(converter.getFNum()), _dNum(converter.getDNum())
+{
+}
+
+Converter::Converter(const std::string& num): _num(num)
 {
 	if (this->isValidNum(num) == false)
 		throw std::invalid_argument("El parámetro no es un número válido");
-	this->num = num;
 	this->castNum();
-	if (num[num.size() - 1] == 'f' && this->isPseudoliteral(num) == false
-		&& (this->dNum < -std::numeric_limits<float>::max() - 1
-		|| std::numeric_limits<float>::max() < this->dNum))
-		throw std::invalid_argument("El parámetro es imposible de representar como float");
-	if (num.rfind('.', std::string::npos) == std::string::npos && this->isPseudoliteral(num) == false
-		&& (this->dNum < -std::numeric_limits<int>::max() - 1 || std::numeric_limits<int>::max() < this->dNum))
-		throw std::invalid_argument("El parámetro es imposible de representar como int");
+	if (this->isPseudoliteral(num) == false)
+	{
+		if (num[num.size() - 1] == 'f' && (this->_dNum < -std::numeric_limits<float>::max() - 1 || std::numeric_limits<float>::max() < this->_dNum))
+			throw std::invalid_argument("El parámetro es imposible de representar como float");
+		if (num.rfind('.', std::string::npos) == std::string::npos && (this->_dNum < -std::numeric_limits<int>::max() - 1 || std::numeric_limits<int>::max() < this->_dNum))
+			throw std::invalid_argument("El parámetro es imposible de representar como int");
+	}
 	this->printNum();
 }
 
-Converter::~Converter(void) {}
-
-bool	Converter::isPseudoliteral(std::string str) const
+Converter::~Converter(void)
 {
-	if (str.compare("-inff") == 0 || str.compare("+inff") == 0 || str.compare("inff") == 0 || str.compare("nanf") == 0)
-		return true;
-	if (str.compare("-inf") == 0 || str.compare("+inf") == 0 || str.compare("inf") == 0 || str.compare("nan") == 0)
-		return true;
-	return false;
 }
 
-bool	Converter::isValidNum(std::string str) const
+const std::string&	Converter::getNum(void) const
+{
+	return this->_num;
+}
+const char&			Converter::getCNum(void) const
+{
+	return this->_cNum;
+}
+const int&			Converter::getINum(void) const
+{
+	return this->_iNum;
+}
+const float&		Converter::getFNum(void) const
+{
+	return this->_fNum;
+}
+const double&		Converter::getDNum(void) const
+{
+	return this->_dNum;
+}
+
+bool	Converter::isPseudoliteral(const std::string& str) const
+{
+	return (str.compare("-inff") == 0 || str.compare("+inff") == 0 || str.compare("inff") == 0 || str.compare("nanf") == 0)
+		|| (str.compare("-inf") == 0 || str.compare("+inf") == 0 || str.compare("inf") == 0 || str.compare("nan") == 0);
+}
+
+bool	Converter::isValidNum(const std::string& str) const
 {
 	std::string::const_iterator	it = str.begin();
 	bool						decimal = false;
 
 	if (str.empty())
 		return false;
-	if (str.length() == 1 && std::isprint(*it) && std::isdigit(*it) == false)
-		return true;
-	if (this->isPseudoliteral(str))
+	if ((str.length() == 1 && std::isprint(*it) && std::isdigit(*it) == false) || this->isPseudoliteral(str))
 		return true;
 	if (it != str.end() && (*it == '-' || *it == '+'))
 		it++;
@@ -69,48 +95,60 @@ bool	Converter::isValidNum(std::string str) const
 
 void	Converter::castNum(void)
 {
-	if (this->num.length() == 1 && std::isprint(this->num[0]) 
-		&& std::isdigit(this->num[0]) == false)
+	if (this->_num.length() == 1 && std::isprint(this->_num[0]) && std::isdigit(this->_num[0]) == false)
 	{
-		this->cNum = this->num[0];
-		this->iNum = static_cast<int>(this->cNum);
-		this->fNum = static_cast<float>(this->cNum);
-		this->dNum = static_cast<double>(this->cNum);
+		this->_cNum = this->_num[0];
+		this->_iNum = static_cast<int>(this->_cNum);
+		this->_fNum = static_cast<float>(this->_cNum);
+		this->_dNum = static_cast<double>(this->_cNum);
 	}
 	else
 	{
-		this->dNum = strtod(this->num.c_str(), NULL);
-		this->cNum = static_cast<char>(this->dNum);
-		this->iNum = static_cast<int>(this->dNum);
-		this->fNum = static_cast<float>(this->dNum);	
+		this->_dNum = strtod(this->_num.c_str(), NULL);
+		this->_cNum = static_cast<char>(this->_dNum);
+		this->_iNum = static_cast<int>(this->_dNum);
+		this->_fNum = static_cast<float>(this->_dNum);	
 	}
 }
 
 void	Converter::printNum(void) const
 {
 	std::cout << "char: " << this->getCharText() << "\nint: ";
-	if (this->dNum < -std::numeric_limits<int>::max() - 1
-		|| std::numeric_limits<int>::max() < this->dNum || this->isPseudoliteral(this->num))
+	if (this->_dNum < -std::numeric_limits<int>::max() - 1
+		|| std::numeric_limits<int>::max() < this->_dNum || this->isPseudoliteral(this->_num))
 		std::cout << "impossible";
 	else
-		std::cout << this->iNum;
+		std::cout << this->_iNum;
 	std::cout << "\nfloat: " << std::fixed << std::setprecision(1);
-	if (this->isPseudoliteral(this->num) == false && (this->dNum < -std::numeric_limits<float>::max() - 1
-		|| std::numeric_limits<float>::max() < this->dNum))
+	if (this->isPseudoliteral(this->_num) == false && (this->_dNum < -std::numeric_limits<float>::max() - 1
+		|| std::numeric_limits<float>::max() < this->_dNum))
 		std::cout << "impossible";
 	else
-		std::cout << this->fNum << "f";
-	std::cout << "\ndouble: " << this->dNum << std::endl;
+		std::cout << this->_fNum << "f";
+	std::cout << "\ndouble: " << this->_dNum << std::endl;
 }
 
 std::string	Converter::getCharText(void) const
 {
-	std::string	charText(1, this->cNum);
+	std::string	charText(1, this->_cNum);
+	bool		decimal = static_cast<float>(this->_iNum) != this->_fNum;
 
-	if (this->iNum < -std::numeric_limits<char>::max() - 1
-		|| std::numeric_limits<char>::max() < this->iNum)
+	if (decimal || this->_iNum < -std::numeric_limits<char>::max() - 1 || std::numeric_limits<char>::max() < this->_iNum)
 		charText = "impossible";
-	else if (std::isprint(this->cNum) == false)
+	else if (std::isprint(this->_cNum) == false)
 		charText = "Non displayable";
 	return charText;
+}
+
+Converter&	Converter::operator=(const Converter& converter)
+{
+	if (this != &converter)
+	{
+		this->_num = converter.getNum();
+		this->_cNum = converter.getCNum();
+		this->_iNum = converter.getINum();
+		this->_fNum = converter.getFNum();
+		this->_dNum = converter.getDNum();
+	}
+	return *this;
 }

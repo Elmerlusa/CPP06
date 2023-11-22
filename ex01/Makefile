@@ -12,10 +12,10 @@
 
 NAME = serializer
 
-CPP = clang++
+CPP = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
-CPPF = main.cpp
+CPPF = main.cpp Serializer.cpp
 CPPO = ${CPPF:.cpp=.o}
 
 RM = rm -rf
