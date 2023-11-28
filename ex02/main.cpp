@@ -19,13 +19,18 @@
 
 Base*	generate(void);
 void	identify(Base *p);
+void	identify(Base& p);
 
 int	main(void)
 {
 	Base*	x = generate();
 	
-	identify(x);
-	delete x;
+	if (x != NULL)
+	{
+		identify(x);
+		identify(*x);
+		delete x;
+	}
 	return 0;
 }
 
@@ -35,15 +40,15 @@ Base*	generate(void)
 	std::rand();
 	switch (std::rand() % 3 + 1)
 	{
-	case 1:
-		std::cout << "------A was generated------" << std::endl;
-		return new A();
-	case 2:
-		std::cout << "------B was generated------" << std::endl;
-		return new B();
-	case 3:
-		std::cout << "------C was generated------" << std::endl;
-		return new C();
+		case 1:
+			std::cout << "------A was generated------" << std::endl;
+			return new A();
+		case 2:
+			std::cout << "------B was generated------" << std::endl;
+			return new B();
+		case 3:
+			std::cout << "------C was generated------" << std::endl;
+			return new C();
 	}
 	std::cout << "Error" << std::endl;
 	return NULL;
@@ -51,12 +56,7 @@ Base*	generate(void)
 
 void	identify(Base *p)
 {
-	if (p == NULL)
-	{
-		std::cout << "NULL pointer" << std::endl;
-		return ;
-	}
-	std::cout << "Identificated. The object is an instance of ";
+	std::cout << "Identificated. The pointer is an instance of ";
 	if (dynamic_cast<A*>(p))
 		std::cout << "A" << std::endl;
 	else if (dynamic_cast<B*>(p))
@@ -65,4 +65,34 @@ void	identify(Base *p)
 		std::cout << "C" << std::endl;
 	else
 		std::cout << "Base" << std::endl;
+}
+
+void	identify(Base& p)
+{
+	std::cout << "Identificated. The reference is an instance of ";
+	try
+	{
+		dynamic_cast<A&>(p);
+		std::cout << "A" << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+		try
+		{
+			dynamic_cast<B&>(p);
+			std::cout << "B" << std::endl;
+		}
+		catch(const std::exception& e)
+		{
+			try
+			{
+				dynamic_cast<C&>(p);
+				std::cout << "C" << std::endl;
+			}
+			catch(const std::exception& e)
+			{
+				std::cout << "Base" << std::endl;
+			}
+		}
+	}
 }

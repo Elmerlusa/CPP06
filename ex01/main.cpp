@@ -20,6 +20,8 @@ void	printData(Data* d);
 
 int	main(void)
 {
+	//Serializer	serializer;
+
 	{
 		uintptr_t	p;
 		Data*		result;
@@ -38,7 +40,7 @@ int	main(void)
 		d->id = 99;
 		d->name = "El Nano";
 		d->age = 42;
-		std::cout << "Serializing and deserializing ";
+		std::cout << "Serializing and deserializing";
 		printData(d);
 		p = Serializer::serialize(d);
 		result = Serializer::deserialize(p);

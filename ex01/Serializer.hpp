@@ -11,8 +11,9 @@ class	Serializer
 		Serializer(const Serializer& serializer);
 		~Serializer(void);
 
-
 		Serializer& operator=(const Serializer& serializer);
+
+		virtual void	makeAbstract(void) const = 0;
 	public:
 		static uintptr_t	serialize(Data* ptr);
 		static Data*		deserialize(uintptr_t raw);
