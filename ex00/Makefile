@@ -15,7 +15,7 @@ NAME = convert
 CPP = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
-CPPF = main.cpp Converter.cpp
+CPPF = main.cpp ScalarConverter.cpp
 CPPO = ${CPPF:.cpp=.o}
 
 RM = rm -rf
@@ -33,14 +33,13 @@ test:		${NAME}
 		./${NAME} ja
 		./${NAME} 3.3.3
 		./${NAME} 3.
-		./${NAME} 3147823589234758902034725089307405723489f
-		./${NAME} 3147823589234758902034725089307405723489
 		@read a
 		clear
 		@echo -------------------------Char
 		./${NAME} a
 		./${NAME} .
 		./${NAME} +
+		./${NAME} t
 		@read a
 		clear
 		@echo -------------------------Integer
@@ -49,6 +48,10 @@ test:		${NAME}
 		./${NAME} 145
 		./${NAME} -42
 		./${NAME} 42
+		./${NAME} 2147483647
+		./${NAME} +2147483648
+		./${NAME} -2147483648
+		./${NAME} -2147483649
 		@read a
 		clear
 		@echo -------------------------Float
@@ -60,6 +63,7 @@ test:		${NAME}
 		./${NAME} -2147483649.0f
 		./${NAME} 2147483647.0f
 		./${NAME} +2147483648.0f
+		./${NAME} 641864456840985098524358098.2f
 		@read a
 		clear
 		@echo -------------------------Double
