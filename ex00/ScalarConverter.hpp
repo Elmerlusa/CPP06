@@ -34,15 +34,6 @@ class	ScalarConverter
 		~ScalarConverter(void);
 
 		ScalarConverter&	operator=(const ScalarConverter& converter);
-		
-		typedef struct	sCastedNums
-		{
-			char	cNum;
-			int		iNum;
-			float	fNum;
-			double	dNum;
-			double	aux;
-		}	tCastedNums;
 
 		static bool	isValidNum(const std::string& str);
 		static int	identifyPseudoliteral(const std::string& str);
@@ -50,10 +41,11 @@ class	ScalarConverter
 		
 		static bool	isChar(const std::string& str);
 
-		static void	castNum(const std::string& str, tCastedNums& castedNums, const int& type);
-		static void	printNum(const std::string& str, const tCastedNums& castedNums);
-		
-		static std::string	getCharText(const tCastedNums& castedNums);
+		static void	castAndPrintNum(const std::string& str, const int& type);
+		static void	castAndPrintChar(const std::string& str);
+		static void	castAndPrintInt(const std::string& str);
+		static void	castAndPrintFloat(const std::string& str);
+		static void	castAndPrintDouble(const std::string& str);
 
 		virtual void	makeClassStatic(void) const = 0;
 	public:

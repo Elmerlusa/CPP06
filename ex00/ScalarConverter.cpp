@@ -93,81 +93,139 @@ bool	ScalarConverter::isChar(const std::string& str)
 	return str.length() == 1 && std::isprint(str[0]) && std::isdigit(str[0]) == false;
 }
 
-void	ScalarConverter::castNum(const std::string& str, tCastedNums& castedNums, const int& type)
+void	ScalarConverter::castAndPrintNum(const std::string& str, const int& type)
 {
-	castedNums.aux = castedNums.dNum = strtod(str.c_str(), NULL);
-	if (type == CHAR)
+	switch (type)
 	{
-		castedNums.cNum = str[0];
-		castedNums.iNum = static_cast<int>(castedNums.cNum);
-		castedNums.fNum = static_cast<float>(castedNums.cNum);
-		castedNums.dNum = static_cast<double>(castedNums.cNum);
-	}
-	else if (type == INT)
-	{
-		castedNums.iNum = atoi(str.c_str());
-		castedNums.cNum = static_cast<char>(castedNums.iNum);
-		castedNums.fNum = static_cast<float>(castedNums.iNum);
-		castedNums.dNum = static_cast<double>(castedNums.iNum);
-	}
-	else if (type == FLOAT)
-	{
-		castedNums.fNum = strtof(str.c_str(), NULL);
-		if (errno == ERANGE)
-		{
-			std::cout << "ERROR" << std::endl;
-			if (str[0] == '-')
-				castedNums.fNum = -std::numeric_limits<float>::infinity();
-			else
-				castedNums.fNum = std::numeric_limits<float>::infinity();
-		}
-		castedNums.cNum = static_cast<char>(castedNums.fNum);
-		castedNums.iNum = static_cast<int>(castedNums.fNum);
-		castedNums.dNum = static_cast<double>(castedNums.fNum);
-	}
-	else
-	{
-		castedNums.dNum = strtod(str.c_str(), NULL);
-		if (errno == ERANGE)
-		{
-			std::cout << "ERROR" << std::endl;
-			if (str[0] == '-')
-				castedNums.dNum = -std::numeric_limits<double>::infinity();
-			else
-				castedNums.dNum = std::numeric_limits<double>::infinity();
-		}
-		castedNums.cNum = static_cast<char>(castedNums.dNum);
-		castedNums.iNum = static_cast<int>(castedNums.dNum);
-		castedNums.fNum = static_cast<float>(castedNums.dNum);
+		case CHAR:
+			ScalarConverter::castAndPrintChar(str);
+			break;
+		case INT:
+			ScalarConverter::castAndPrintInt(str);
+			break;
+		case FLOAT:
+			ScalarConverter::castAndPrintFloat(str);
+			break;
+		case DOUBLE:
+			ScalarConverter::castAndPrintDouble(str);
+			break;
+		default:
+			throw std::runtime_error("Error");
 	}
 }
 
-void	ScalarConverter::printNum(const std::string& str, const tCastedNums& castedNums)
+void	ScalarConverter::castAndPrintChar(const std::string& str)
 {
-	std::cout << "char: " << ScalarConverter::getCharText(castedNums) << "\nint: ";
-	if (castedNums.aux < -std::numeric_limits<int>::max() - 1
-		|| std::numeric_limits<int>::max() < castedNums.aux || ScalarConverter::identifyPseudoliteral(str) != NOTYPE)
-		std::cout << "impossible";
-	else
-		std::cout << castedNums.iNum;
-	std::cout << "\nfloat: " << std::fixed << std::setprecision(1);
-	if (castedNums.aux < -std::numeric_limits<float>::max() - 1
-		|| std::numeric_limits<float>::max() < castedNums.aux)
-		std::cout << castedNums.aux > 0 ? std::numeric_limits<float>::infinity() : -std::numeric_limits<float>::infinity();
-	else
-		std::cout << castedNums.fNum;
-	std::cout << "f\ndouble: " << castedNums.dNum << std::endl;
+	std::cout << "char: " << str[0] << "\n"
+		<< "int: " << static_cast<int>(str[0]) << "\n"
+		<< std::fixed << std::setprecision(1)
+		<< "float: " << static_cast<float>(str[0]) << "f\n"
+		<< "double: " << static_cast<double>(str[0]) << std::endl;
 }
 
-std::string	ScalarConverter::getCharText(const tCastedNums& castedNums)
+void	ScalarConverter::castAndPrintInt(const std::string& str)
 {
-	std::string	charText(1, castedNums.cNum);
+	const double	aux = strtod(str.c_str(), NULL);
 
-	if (castedNums.iNum < -std::numeric_limits<char>::max() - 1 || std::numeric_limits<char>::max() < castedNums.iNum)
-		charText = "impossible";
-	else if (std::isprint(castedNums.cNum) == false)
-		charText = "Non displayable";
-	return charText;
+	if (errno == ERANGE || (aux < static_cast<double>(-std::numeric_limits<int>::max() - 1)
+		|| static_cast<double>(std::numeric_limits<int>::max()) < aux))
+	{
+		std::cout << "char: conversion does not make sense: int overflow\n"
+			<< "int: impossible\n"
+			<< "float: conversion does not make sense: int overflow\n"
+			<< "double: conversion does not make sense: int overflow" << std::endl;
+	}
+	else
+	{
+		const int		iNum = atoi(str.c_str());
+
+		if (iNum < static_cast<int>(-std::numeric_limits<char>::max() - 1)
+			|| static_cast<int>(std::numeric_limits<char>::max()) < iNum)
+			std::cout << "char: impossible\n";
+		else if (std::isprint(iNum) == false)
+			std::cout << "char: non displayable\n";
+		else
+			std::cout << "char: " << static_cast<char>(iNum) << "\n";
+		std::cout << "int: " << iNum << "\n"
+			<< std::fixed << std::setprecision(1)
+			<< "float: " << static_cast<float>(iNum) << "f\n"
+			<< "double: " << static_cast<double>(iNum) << std::endl;
+	}
+}
+
+void	ScalarConverter::castAndPrintFloat(const std::string& str)
+{
+	float	fNum = strtof(str.c_str(), NULL);
+
+	if (errno == ERANGE || str == "nanf")
+	{
+		if (errno == ERANGE)
+			fNum = str[0] == '-' ? strtof("-inff", NULL) : strtof("+inff", NULL);
+		std::cout << "char: impossible\n"
+			<< "int: impossible\n"
+			<< "float: " << fNum << "f\n"
+			<< "double: " << static_cast<double>(fNum) << std::endl;
+	}
+	else
+	{
+		if (fNum < static_cast<float>(-std::numeric_limits<char>::max() - 1)
+			|| static_cast<float>(std::numeric_limits<char>::max()) < fNum)
+			std::cout << "char: impossible\n";
+		else if (std::isprint(static_cast<int>(fNum)) == false)
+			std::cout << "char: non displayable\n";
+		else
+			std::cout << "char: " << static_cast<char>(fNum) << "\n";
+		if (fNum < static_cast<float>(-std::numeric_limits<int>::max() - 1)
+			|| static_cast<float>(std::numeric_limits<int>::max()) < fNum)
+			std::cout << "int: impossible\n";
+		else
+			std::cout << "int: " << static_cast<int>(fNum) << "\n";
+		std::cout << std::fixed << std::setprecision(1)
+			<< "float: " << fNum << "f\n"
+			<< "double: " << static_cast<double>(fNum) << std::endl;
+	}
+}
+
+void	ScalarConverter::castAndPrintDouble(const std::string& str)
+{
+	double	dNum = strtod(str.c_str(), NULL);
+
+	if (errno == ERANGE || str == "nan")
+	{
+		if (errno == ERANGE)
+			dNum = str[0] == '-' ? strtof("-inf", NULL) : strtof("+inf", NULL);
+		std::cout << "char: impossible\n"
+			<< "int: impossible\n"
+			<< "float: " << static_cast<float>(dNum) << "f\n"
+			<< "double: " << dNum << std::endl;
+	}
+	else
+	{
+		if (dNum < static_cast<double>(-std::numeric_limits<char>::max() - 1)
+			|| static_cast<double>(std::numeric_limits<char>::max()) < dNum)
+			std::cout << "char: impossible\n";
+		else if (std::isprint(static_cast<int>(dNum)) == false)
+			std::cout << "char: non displayable\n";
+		else
+			std::cout << "char: " << static_cast<char>(dNum) << "\n";
+		if (dNum < static_cast<double>(-std::numeric_limits<int>::max() - 1)
+			|| static_cast<double>(std::numeric_limits<int>::max()) < dNum)
+			std::cout << "int: impossible\n";
+		else
+			std::cout << "int: " << static_cast<int>(dNum) << "\n";
+		std::cout << std::fixed << std::setprecision(1);
+		if (dNum < static_cast<double>(-std::numeric_limits<float>::max() - 1)
+			|| static_cast<double>(std::numeric_limits<float>::max()) < dNum)
+		{
+			if (str[0] == '-')
+				std::cout << "float: -inff\n";
+			else
+				std::cout << "float: inff\n";
+		}
+		else
+			std::cout << "float: " << static_cast<float>(dNum) << "\n";
+		std::cout << "double: " << dNum << std::endl;
+	}
 }
 
 void	ScalarConverter::convert(const std::string& str)
@@ -177,10 +235,5 @@ void	ScalarConverter::convert(const std::string& str)
 	if (type == NOTYPE)
 		std::cout << "El parámetro no es un número válido" << std::endl;
 	else
-	{
-		tCastedNums	castedNums;
-		
-		castNum(str, castedNums, type);
-		printNum(str, castedNums);
-	}
+		castAndPrintNum(str, type);
 }
