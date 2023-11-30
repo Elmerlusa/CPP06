@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 13:38:11 by javmarti          #+#    #+#             */
-/*   Updated: 2023/08/25 13:38:12 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/11/30 15:38:17 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,24 +69,26 @@ void	identify(Base *p)
 
 void	identify(Base& p)
 {
+	Base	aux;
+	
 	std::cout << "Identificated. The reference is an instance of ";
 	try
 	{
-		dynamic_cast<A&>(p);
+		aux = dynamic_cast<A&>(p);
 		std::cout << "A" << std::endl;
 	}
 	catch(const std::exception& e)
 	{
 		try
 		{
-			dynamic_cast<B&>(p);
+			aux = dynamic_cast<B&>(p);
 			std::cout << "B" << std::endl;
 		}
 		catch(const std::exception& e)
 		{
 			try
 			{
-				dynamic_cast<C&>(p);
+				aux = dynamic_cast<C&>(p);
 				std::cout << "C" << std::endl;
 			}
 			catch(const std::exception& e)
@@ -95,4 +97,5 @@ void	identify(Base& p)
 			}
 		}
 	}
+	(void) aux;
 }

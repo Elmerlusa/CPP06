@@ -2,8 +2,6 @@
 
 #include "Data.hpp"
 
-class	Data;
-
 class	Serializer
 {
 	private:
